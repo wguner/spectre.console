@@ -6,6 +6,16 @@ namespace Spectre.Console.Cli;
 /// <seealso cref="AsyncCommand"/>
 public abstract class Command : ICommand<EmptyCommandSettings>
 {
+    ITypeRegistrar _app;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Command{TDefaultCommand}"/> class.
+    /// </summary>
+    /// <param name="registrar">The registrar.</param>
+    public Command(ITypeRegistrar? registrar = null)
+    {
+        _app = registrar ?? throw new ArgumentNullException(nameof(registrar));
+    }
+
     /// <summary>
     /// Executes the command.
     /// </summary>

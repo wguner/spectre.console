@@ -2,6 +2,25 @@ namespace Spectre.Console.Tests.Unit.Cli;
 
 public sealed partial class CommandAppTests
 {
+
+    [Fact]
+    public void Should_Pass_Constructor()
+    {
+        var app = new CommandAppTester();
+        app.Configure(config =>
+        {
+            config.PropagateExceptions();
+            config.AddBranch<AnimalSettings>("animal", animal =>
+            {
+                animal.AddBranch<MammalSettings>("mammal", mammal =>
+                {
+                    mammal.AddCommand<DogCommand>("dog");
+                    mammal.AddCommand<HorseCommand>("horse");
+                });
+            });
+        });
+    }
+
     [Fact]
     public void Should_Pass_Case_1()
     {
