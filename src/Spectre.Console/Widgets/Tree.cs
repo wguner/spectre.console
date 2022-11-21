@@ -63,7 +63,7 @@ public sealed class Tree : Renderable, IHasTreeNodes
             var stackNode = stack.Pop();
             if (stackNode.Count == 0)
             {
-                levels.RemoveLast();
+                var removeLast = levels.RemoveLast();
                 if (levels.Count > 0)
                 {
                     levels.AddOrReplaceLast(GetGuide(context, TreeGuidePart.Fork));

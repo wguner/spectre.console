@@ -141,27 +141,28 @@ public sealed class Paragraph : Renderable, IAlignable, IOverflowable
             return Array.Empty<Segment>();
         }
 
-        var lines = context.SingleLine
-            ? new List<SegmentLine>(_lines)
-            : SplitLines(maxWidth);
-
         // Justify lines
-        var justification = context.Justification ?? Alignment ?? Justify.Left;
-        if (justification != Justify.Left)
+        if ((context.Justification ?? Alignment ?? Justify.Left) != Justify.Left)
         {
-            foreach (var line in lines)
+            foreach (var line in context.SingleLine
+                         ? new List<SegmentLine>(_lines)
+                         : SplitLines(maxWidth))
             {
-                Aligner.Align(line, justification, maxWidth);
+                Aligner.Align(line, context.Justification ?? Alignment ?? Justify.Left, maxWidth);
             }
         }
 
         if (context.SingleLine)
         {
             // Return the first line
-            return lines[0].Where(segment => !segment.IsLineBreak);
+            return (context.SingleLine
+                ? new List<SegmentLine>(_lines)
+                : SplitLines(maxWidth))[0].Where(segment => !segment.IsLineBreak);
         }
 
-        return new SegmentLineEnumerator(lines);
+        return new SegmentLineEnumerator(context.SingleLine
+            ? new List<SegmentLine>(_lines)
+            : SplitLines(maxWidth));
     }
 
     private List<SegmentLine> Clone()
@@ -234,8 +235,7 @@ public sealed class Paragraph : Renderable, IAlignable, IOverflowable
                 continue;
             }
 
-            var length = current.CellCount();
-            if (length > maxWidth)
+            if (current.CellCount() > maxWidth)
             {
                 // The current segment is longer than the width of the console,
                 // so we will need to crop it up, into new segments.
@@ -262,7 +262,7 @@ public sealed class Paragraph : Renderable, IAlignable, IOverflowable
             }
             else
             {
-                if (line.CellCount() + length > maxWidth)
+                if (line.CellCount() + current.CellCount() > maxWidth)
                 {
                     line.Add(Segment.Empty);
                     lines.Add(line);

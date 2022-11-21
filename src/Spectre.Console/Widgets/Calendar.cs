@@ -10,9 +10,7 @@ public sealed class Calendar : JustInTimeRenderable, IHasCulture, IHasTableBorde
 
     private readonly ListWithCallback<CalendarEvent> _calendarEvents;
 
-    private int _year;
-    private int _month;
-    private int _day;
+    private int _year, _month, _day;
     private TableBorder _border;
     private bool _useSafeBorder;
     private Style? _borderStyle;
@@ -216,7 +214,7 @@ public sealed class Calendar : JustInTimeRenderable, IHasCulture, IHasTableBorde
                 table.AddRow(row.ToArray());
                 row.Clear();
             }
-
+            // gets the next weekday 
             weekday = weekday.GetNextWeekDay();
         }
 
